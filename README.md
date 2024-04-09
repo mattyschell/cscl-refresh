@@ -6,7 +6,6 @@ Data creator schema inventory:
 
 * CSCL
 * CSCL_PUB
-* CSCL_READ_ONLY
 
 ## Option 1: Oracle Data Pump
 
