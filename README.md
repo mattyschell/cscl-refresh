@@ -2,7 +2,7 @@
 
 We wish to refresh a lower level enterprise geodatabase in Oracle 19c with recent CSCL production data. 
 
-Data owner schema inventory:
+Data creator schema inventory:
 
 * CSCL
 * CSCL_PUB
@@ -10,10 +10,15 @@ Data owner schema inventory:
 
 ## Option 1: Oracle Data Pump
 
+Assumptions:
+
+* We have previously completed all required setup outside of the geodatabase schemas.  Roles exist, Oracle Spatial and Oracle Text are installed, etc.
+* All data owner schemas on the non-prod target will be refreshed.  If not refreshed, these schemas must be abandoned.
+
 
 ### 1. Source SDE: expdp
 
-Here is a sample expdp command from the ESRI white paper under the doc directory.  
+For reference, here is a sample expdp command from the ESRI white paper under the /doc directory. We typically leave these details to the database administrators. Whatever standard procedure they use is likely good for us.
 
 ```sh
 expdp \"sde/*****@mcsdboralnx3:1575/aeropro1.esri.com\"
@@ -23,13 +28,15 @@ dumpfile=dp_aeropro1_sde_%U.dmp schemas=sde logfile=dpexp_aeropro1_sde.log
 ```
 ### 2. Target SDE: drop with cascade option and recreate
 
+Update the password (placeholder: ****) in the script.   
+
 ```sql
 @sql\recreate-sde.sql
 ```
 
 ### 3. Target SDE: impdp
 
-Sample impdp from the white paper under /doc
+Reference sample impdp from the white paper under /doc.
 
 ```sh
 impdp \"sde/*****@mcsdboralnx7:1577/aeropro1.esri.com\" directory=data_pump_dir2
@@ -59,6 +66,47 @@ Refer to:
 
 ### 5. Repeat for data owner schemas
 
+#### 5a 
+
+What do we have on the source that could be exported? Probably cscl and cscl_pub plus some randos we should ignore.
+
+```sql
+select distinct(owner) from sde.table_registry order by 1;
+```
+
+#### 5b
+
+Drop cscl and cscl_pub on the target.
+
+```sql
+@sql\recreate-sde.sql
+```
+
+#### 5c
+
+Recreate cscl and cscl_pub with the style that the DBA knows and loves.
+
+Check. Login as cscl and cscl_pub:
+
+```sql
+@sql\verify-creator.sql
+```
+
+
+#### 5d
+
+impdp cscl and cscl_pub. 
+
+Ignore errors like: ORA-31684: Object type INDEX:"XXXX"."A377_IX1" already exists
+
+
+#### 5e
+
+```sql
+EXEC dbms_utility.compile_schema( 'CSCL', compile_all => FALSE );
+EXEC dbms_utility.compile_schema( 'CSCL_PUB', compile_all => FALSE );
+select * from all_indexes d where d.status not in ('VALID','N/A');
+```
 
 
 
