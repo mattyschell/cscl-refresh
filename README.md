@@ -1,6 +1,6 @@
 # cscl-refresh
 
-We wish to refresh a lower level enterprise geodatabase in Oracle 19c with recent CSCL production data. 
+We wish to refresh a non-production enterprise geodatabase in Oracle 19c with recent CSCL production data. Friends this our non-production CSCL geodatabase, our rules, the trick never to be afraid. 
 
 Data creator schema inventory:
 
@@ -107,6 +107,10 @@ EXEC dbms_utility.compile_schema( 'CSCL_PUB', compile_all => FALSE );
 select * from all_indexes d where d.status not in ('VALID','N/A');
 ```
 
+
+### 6 Check it Out
+
+Refer to the checklist in doc\checklist.md
 
 
 ## Option 2: Use ESRI Tools
