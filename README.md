@@ -1,6 +1,6 @@
 # cscl-refresh
 
-We wish to refresh a non-production enterprise geodatabase in Oracle 19c with recent CSCL production data. Friends this our non-production CSCL geodatabase, our rules, the trick never to be afraid. 
+We wish to refresh a non-production enterprise geodatabase in Oracle 19c with recent CSCL production data. Friends this our non-production CSCL geodatabase, our rules, the trick is never to be afraid. 
 
 Data creator schema inventory:
 
@@ -78,7 +78,7 @@ select distinct(owner) from sde.table_registry order by 1;
 Drop cscl and cscl_pub on the target.
 
 ```sql
-@sql\recreate-sde.sql
+@sql\recreate-data-creators.sql
 ```
 
 #### 5c
