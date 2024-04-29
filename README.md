@@ -15,9 +15,12 @@ Assumptions:
 * All data owner schemas on the non-prod target will be refreshed.  If not refreshed, these schemas must be abandoned.
 
 
-### 1. Source SDE: expdp
+### 1. Source Geodatabase: Expdp All Schemas
+
+Exporting all schemas at the same time reduces the possibility that SDE is out of synch with the data creator schemas.
 
 For reference, here is a sample expdp command from the ESRI white paper under the /doc directory. We typically leave these details to the database administrators. Whatever standard procedure they use is likely good for us.
+
 
 ```sh
 expdp \"sde/*****@mcsdboralnx3:1575/aeropro1.esri.com\"
@@ -25,6 +28,7 @@ ACCESS_METHOD=EXTERNAL_TABLE directory=data_pump_dir2
 filesize=3G parallel=8 exclude=statistics logtime=all metrics=yes
 dumpfile=dp_aeropro1_sde_%U.dmp schemas=sde logfile=dpexp_aeropro1_sde.log
 ```
+
 ### 2. Target SDE: drop with cascade option and recreate
 
 Update the password (placeholder: ****) in the script.   
@@ -62,18 +66,9 @@ Refer to:
     sde-post-imdp.sql
 
 
+### 5. Import Data Creator Schemas
 
-### 5. Repeat for data owner schemas
-
-#### 5a 
-
-What do we have on the source that could be exported? Probably cscl and cscl_pub plus some randos we should ignore.
-
-```sql
-select distinct(owner) from sde.table_registry order by 1;
-```
-
-#### 5b
+#### 5a
 
 Drop cscl and cscl_pub on the target.
 
@@ -81,9 +76,13 @@ Drop cscl and cscl_pub on the target.
 @sql\recreate-data-creators.sql
 ```
 
-#### 5c
+#### 5b
 
-Recreate cscl and cscl_pub with the style that the DBA knows and loves.
+Recreate cscl and cscl_pub. Replace placeholder passwords in the script. 
+
+```sql
+@sql\recreate-data-creators.sql
+```
 
 Check. Login as cscl and cscl_pub:
 
@@ -91,22 +90,21 @@ Check. Login as cscl and cscl_pub:
 @sql\verify-creator.sql
 ```
 
-
-#### 5d
+#### 5c
 
 impdp cscl and cscl_pub. 
 
 Ignore errors like: ORA-31684: Object type INDEX:"XXXX"."A377_IX1" already exists
 
 
-#### 5e
+#### 5d
 
 ```sql
 EXEC dbms_utility.compile_schema( 'CSCL', compile_all => FALSE );
 EXEC dbms_utility.compile_schema( 'CSCL_PUB', compile_all => FALSE );
 select * from all_indexes d where d.status not in ('VALID','N/A');
+select distinct(owner) from dba_objects where status != 'VALID';
 ```
-
 
 ### 6 Check it Out
 
@@ -115,8 +113,8 @@ Refer to the checklist in doc\checklist.md
 
 ## Option 2: Use ESRI Tools
 
-This should be possible but will require familiarity with the CSCL data model. And because of the CSCL class extensions any automation must be developed with classic ArcPy 2.7.
+This should be possible but will require patience and familiarity with the CSCL data model. And because of the CSCL class extensions any automation must be developed with classic ArcPy 2.7.
 
 ## Option 3: ESRI XML Export Import
 
-The CSCL experts suggest this. Unknown if it's even possible.
+The CSCL experts suggest this and insist it is possible.

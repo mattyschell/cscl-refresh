@@ -10,7 +10,7 @@ As far as we know there is no documentation describing the CSCL schema or data m
 select count(*) from user_objects where status <> 'VALID';
 ```
 
-2. Some (but not all) versioned views
+2. Some (but not all) versioned views. The CSCL team has enabled SQL access on a subset of CSCL versioned feature classes.
 
 ```sql
 select count(*) from user_views where view_name like '%EVW';
@@ -24,7 +24,7 @@ select min(shape) from centerline;
 
 ### Geodatabase
 
-Review CSCL with classic 32 bit ArcCatalog
+Review CSCL with classic 32 bit ArcCatalog with CSCL class extensions installed.
 
 1. One feature dataset named CSCL
 
