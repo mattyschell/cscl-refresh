@@ -24,7 +24,7 @@ select min(shape) from centerline;
 
 ### Geodatabase
 
-Review CSCL with classic 32 bit ArcCatalog with CSCL class extensions installed.
+Review CSCL using classic 32 bit ArcCatalog.
 
 1. One feature dataset named CSCL
 

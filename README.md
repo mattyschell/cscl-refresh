@@ -100,8 +100,8 @@ Ignore errors like: ORA-31684: Object type INDEX:"XXXX"."A377_IX1" already exist
 #### 5d
 
 ```sql
-EXEC dbms_utility.compile_schema( 'CSCL', compile_all => FALSE );
-EXEC dbms_utility.compile_schema( 'CSCL_PUB', compile_all => FALSE );
+EXEC dbms_utility.compile_schema('CSCL', compile_all => FALSE );
+EXEC dbms_utility.compile_schema('CSCL_PUB', compile_all => FALSE );
 select * from all_indexes d where d.status not in ('VALID','N/A');
 select distinct(owner) from dba_objects where status != 'VALID';
 ```
@@ -109,6 +109,22 @@ select distinct(owner) from dba_objects where status != 'VALID';
 ### 6 Check it Out
 
 Refer to the checklist in doc\checklist.md
+
+### 7 Post Import Tidying
+
+1. Delete all versions except SDE.DEFAULT
+2. Delete all replicas
+3. Delete all rows from sde.compress_log  
+4. Fully compress the database.
+5. Recreate the cscl versions
+6. (optional) Remove the CSCL class extensions 
+
+```
+SDE.DEFAULT
+    CSCL.WORKINGVERSION (Protected)
+        CSCL.DCPWORKVERSION (Public)
+        CSCL.DOITTWORKVERSION (Public)
+```
 
 
 ## Option 2: Use ESRI Tools
