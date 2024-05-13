@@ -1,6 +1,6 @@
 # cscl-refresh
 
-We wish to refresh a non-production enterprise geodatabase in Oracle 19c with recent CSCL production data. Friends this our non-production CSCL geodatabase, our rules, the trick is never to be afraid. 
+We wish to refresh a non-production enterprise geodatabase in Oracle 19c with recent Citywide Street Centerline (CSCL) production data. Friends this our CSCL geodatabase, our rules, the trick is never to be afraid. 
 
 Data creator schema inventory:
 
@@ -12,14 +12,14 @@ Data creator schema inventory:
 Assumptions:
 
 * We have previously completed all required setup outside of the geodatabase schemas.  Roles exist, Oracle Spatial and Oracle Text are installed, etc.
-* All data owner schemas on the non-prod target will be refreshed.  If not refreshed, these schemas must be abandoned.
+* All data creator schemas on the non-prod target will be refreshed.  Any data creator schema not refreshed must be abandoned. 
 
 
 ### 1. Source Geodatabase: Expdp All Schemas
 
 Exporting all schemas at the same time reduces the possibility that SDE is out of synch with the data creator schemas.
 
-For reference, here is a sample expdp command from the ESRI white paper under the /doc directory. We typically leave these details to the database administrators. Whatever standard procedure they use is likely good for us.
+For reference, here is a sample expdp command from the ESRI white paper under the /doc directory. We typically leave these details to the database administrators. Whatever standard procedure they use will work for us.
 
 
 ```sh
@@ -70,15 +70,7 @@ Refer to:
 
 #### 5a
 
-Drop cscl and cscl_pub on the target.
-
-```sql
-@sql\recreate-data-creators.sql
-```
-
-#### 5b
-
-Recreate cscl and cscl_pub. Replace placeholder passwords in the script. 
+Drop and recreate cscl and cscl_pub on the target.
 
 ```sql
 @sql\recreate-data-creators.sql
@@ -90,14 +82,13 @@ Check. Login as cscl and cscl_pub:
 @sql\verify-creator.sql
 ```
 
-#### 5c
+#### 5b
 
 impdp cscl and cscl_pub. 
 
 Ignore errors like: ORA-31684: Object type INDEX:"XXXX"."A377_IX1" already exists
 
-
-#### 5d
+#### 5c
 
 ```sql
 EXEC dbms_utility.compile_schema('CSCL', compile_all => FALSE );
@@ -115,9 +106,20 @@ Refer to the checklist in doc\checklist.md
 1. Delete all versions except SDE.DEFAULT
 2. Delete all replicas
 3. Delete all rows from sde.compress_log  
-4. Fully compress the database.
-5. Recreate the cscl versions
-6. (optional) Remove the CSCL class extensions 
+4. Fully compress the database
+5. Scrub security level 3 data
+```sql
+delete from 
+    cscl.commonplace a
+where 
+    a.security_level = 3;
+delete from 
+    cscl.featurename a
+where 
+    a.security_level = 3;
+commit;
+```
+6. Recreate cscl version tree
 
 ```
 SDE.DEFAULT
@@ -125,6 +127,8 @@ SDE.DEFAULT
         CSCL.DCPWORKVERSION (Public)
         CSCL.DOITTWORKVERSION (Public)
 ```
+7. (optional, out of scope for this repo) Remove the CSCL class extensions 
+
 
 
 ## Option 2: Use ESRI Tools
