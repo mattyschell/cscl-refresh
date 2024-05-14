@@ -60,10 +60,10 @@ Ignore these errors types:
 ### 4. Verify, fix as necessary
 
 Refer to:
-    
-    sde-check-post-imdp.sql
 
     sde-post-imdp.sql
+    
+    sde-check-post-imdp.sql    
 
 
 ### 5. Import Data Creator Schemas
@@ -91,9 +91,13 @@ Ignore errors like: ORA-31684: Object type INDEX:"XXXX"."A377_IX1" already exist
 #### 5c
 
 ```sql
+-- as CSCL
 EXEC dbms_utility.compile_schema('CSCL', compile_all => FALSE );
+-- as CSCL_PUB
 EXEC dbms_utility.compile_schema('CSCL_PUB', compile_all => FALSE );
+-- should be none
 select * from all_indexes d where d.status not in ('VALID','N/A');
+-- should not be in SDE, CSCL, CSCL_PUB
 select distinct(owner) from dba_objects where status != 'VALID';
 ```
 
@@ -104,7 +108,7 @@ Refer to the checklist in doc\checklist.md
 ### 7 Post Import Tidying
 
 1. Delete all versions except SDE.DEFAULT
-2. Delete all replicas
+2. Delete (aka unregister) all replicas
 3. Delete all rows from sde.compress_log  
 4. Fully compress the database
 5. Scrub security level 3 data
@@ -120,7 +124,6 @@ where
 commit;
 ```
 6. Recreate cscl version tree
-
 ```
 SDE.DEFAULT
     CSCL.WORKINGVERSION (Protected)
