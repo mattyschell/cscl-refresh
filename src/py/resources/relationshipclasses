@@ -9,7 +9,7 @@ CenterlinesHaveSegmentLGC
 CenterlinesHaveTrafficCameras
 CenterlinesHaveTransitEmergencyExits
 CenterlinesHaveTravelRestrictions
-CetnerlinesToSEDAT
+CenterlinesToSEDAT
 CenterlinesToStreetsHaveIntersections
 CommonPlace_Streetname
 CommonPlacesHaveAccessPoints
@@ -20,7 +20,7 @@ ComplexesHaveComplexAccessPoints
 ComplexIntersectionsHaveNodes
 IntersectionsToBoundaries
 NamedIntersectionsHaveStreetNames
-NodesHaveNamedInstersections
+NodesHaveNamedIntersections
 NodesHaveSegments
 NodesHaveSpecialIntersections
 NodesHaveVirtualIntersections
