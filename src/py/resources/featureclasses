@@ -1,6 +1,5 @@
 AccessPoint
 AddressPoint
-AdjacentBoroughBoundary
 AlarmBox
 AlarmBoxArea
 AssemblyDistrict
@@ -14,12 +13,12 @@ CensusBlock2020
 CensusTract1990
 CensusTract2000
 CensusTract2010
-CennsusTract2020
+CensusTract2020
 CityCouncilDistrict
 CityLimit
 CommonPlace
 CommonPlaceBulkLoadStaging
-CommmunityDistrict
+CommunityDistrict
 Complex
 ComplexAccessPoint
 CongressionalDistrict
@@ -29,8 +28,6 @@ EMSBattalion
 EMSDispatchArea
 EMSDivision
 EntrancePoint
-ESINETAtomicLine
-ESINETAtomicPoint
 FireBattalion
 FireCompany
 FireDivision

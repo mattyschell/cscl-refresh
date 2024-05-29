@@ -24,7 +24,7 @@ select min(shape) from centerline;
 
 ### Geodatabase
 
-Review CSCL using classic 32 bit ArcCatalog.
+Review CSCL using classic 32 bit ArcCatalog.  Review first as CSCL.  
 
 1. One feature dataset named CSCL
 
@@ -38,6 +38,7 @@ Review CSCL using classic 32 bit ArcCatalog.
 
 6. No registered archive feature tables. These table names end with "_H" 
 
+7. Repeat steps 1-6 from an editor connection. 
 
 ### Data
 

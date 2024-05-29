@@ -1,6 +1,6 @@
 # cscl-refresh
 
-We wish to refresh a non-production enterprise geodatabase in Oracle 19c with recent Citywide Street Centerline (CSCL) production data. Friends this our CSCL geodatabase, our rules, the trick is never to be afraid. 
+We wish to refresh a non-production Enterprise Geodatabase on Oracle 19c with recent New York City Citywide Street Centerline (CSCL) production data. Friends this our CSCL geodatabase, our rules, the trick is never to be afraid. 
 
 Data creator schema inventory:
 
@@ -101,9 +101,21 @@ select * from all_indexes d where d.status not in ('VALID','N/A');
 select distinct(owner) from dba_objects where status != 'VALID';
 ```
 
+#### 5d
+
+Grant correct privileges.  These are implemented chaotically on the source and for this reason  alone we can't rely on them importing correclty.  Also impdp can't account for business objects like feature datasets. 
+
+Update the environmentals at the top of the batch file and be advised that arcpy may churn away for 20-30 minutes while executing the grants.  
+
+```bat
+> grantall.bat
+```
+
+
 ### 6 Check it Out
 
 Refer to the checklist in doc\checklist.md
+
 
 ### 7 Post Import Tidying
 
@@ -138,6 +150,8 @@ SDE.DEFAULT
 
 This should be possible but will require patience and familiarity with the CSCL data model. And because of the CSCL class extensions any automation must be developed with classic ArcPy 2.7.
 
+
+
 ## Option 3: ESRI XML Export Import
 
-The CSCL experts suggest this and insist it is possible.
+The CSCL experts suggest this approach and insist it is possible and hand to god they really did it once over a decade ago.
