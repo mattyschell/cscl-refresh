@@ -1,6 +1,6 @@
 ## Check it Out
 
-As far as we know there is no documentation describing the CSCL schema or data model.  This checklist is not intended to be complete or comprehensive. It is intended to be a sample that is good enough to catch broad categories of refresh failures.
+As far as we know there is no documentation describing the CSCL schema or data model.  This checklist is not intended to be complete or comprehensive. It is intended to be a sample that is good enough to catch broad categories of refresh failures. 
 
 ### Database
 
@@ -21,24 +21,6 @@ select count(*) from user_views where view_name like '%EVW';
 ```sql
 select min(shape) from centerline;
 ```
-
-### Geodatabase
-
-Review CSCL using classic 32 bit ArcCatalog.  Review first as CSCL.  
-
-1. One feature dataset named CSCL
-
-2. 10 feature classes and 3 relationship classes inside the CSCL feature dataset
-
-3. 64 additional registered feature classes if the source is CSCL production. In the ArcCatalog contents pane sort on "Type" and highlight.
-
-4. 43 relationship classes. Sort on "Type" in the ArcCatalog contents pane.
-
-5. 42 registered feature tables. Sort on "Type" in the ArcCatalog contents pane.
-
-6. No registered archive feature tables. These table names end with "_H" 
-
-7. Repeat steps 1-6 from an editor connection. 
 
 ### Data
 

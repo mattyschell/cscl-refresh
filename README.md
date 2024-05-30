@@ -103,7 +103,7 @@ select distinct(owner) from dba_objects where status != 'VALID';
 
 #### 5d
 
-Grant correct privileges.  These are implemented chaotically on the source and for this reason  alone we can't rely on them importing correclty.  Also impdp can't account for business objects like feature datasets. 
+Grant correct privileges.  These are implemented chaotically on the source and for this reason alone we can't rely on them importing correctly.  Also impdp can't account for business objects like feature datasets. 
 
 Update the environmentals at the top of the batch file and be advised that arcpy may churn away for 20-30 minutes while executing the grants.  
 
@@ -114,7 +114,13 @@ Update the environmentals at the top of the batch file and be advised that arcpy
 
 ### 6 Check it Out
 
-Refer to the checklist in doc\checklist.md
+Update the environmentals at the top.  The best check is from a user schema that should have access to CSCL.
+
+```bat
+> verifycatalog.bat
+```
+
+Then refer to the checklist in doc\checklist.md
 
 
 ### 7 Post Import Tidying
