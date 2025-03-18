@@ -272,7 +272,7 @@ set
             from sde.table_registry where owner = USER
             and table_name = 'xxFEATURECLASSxx_H')
         ,'GDB_FROM_DATE'
-        ,'GDBB_TO_DATE'
+        ,'GDB_TO_DATE'
         ,1234567890 --todo: unix epoch time in seconds should be same as source?
         ,0
     );
