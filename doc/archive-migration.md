@@ -143,7 +143,7 @@ In the real workflow the data will move to an interim file geodatabase here.
 
 4.	Source: Unset IS_HISTORY to make source _H table visible
 
-Note where clause below ID of history table not featureclass.
+The ID in the where clause below is of the history table not the featureclass.
 
 ```sql
 -- Unset IS_HISTORY
@@ -165,13 +165,17 @@ Commit and refresh ESRI software.
 
 ```sql
 -- Set IS_HISTORY
-UPDATE sde.table_registry
-SET    OBJECT_FLAGS = CASE
-                        WHEN MOD(TRUNC(OBJECT_FLAGS / POWER(2, 20)), 2) = 0 THEN
-                        OBJECT_FLAGS + POWER(2, 20)
-                        ELSE OBJECT_FLAGS
-                      END
-WHERE  REGISTRATION_ID = <HISTORY_REGID from SDE.SDE_ARCHIVES>; 
+UPDATE 
+    sde.table_registry
+SET 
+    OBJECT_FLAGS = CASE
+                       WHEN MOD(TRUNC(OBJECT_FLAGS / POWER(2, 20)), 2) = 0 
+                       THEN
+                          OBJECT_FLAGS + POWER(2, 20)
+                       ELSE OBJECT_FLAGS
+                   END
+WHERE  
+    REGISTRATION_ID = <HISTORY_REGID from SDE.SDE_ARCHIVES>; 
 ```
 
 7. Target: objectid update 
@@ -196,21 +200,16 @@ END;
 (TODO: Why so slow? Globalid is indexed on both sides)
 
 ```sql
-update 
+merge into
     xxFEATURECLASSxx_h a
+using 
+    xxFEATURECLASSxx b
+on
+    (a.globalid = b.globalid)
+when matched then
+update
 set
-    a.objectid = (select 
-                      b.objectid
-                  from 
-                      xxFEATURECLASSxx b
-                  where
-                      b.globalid = a.globalid)
-where exists
-    (select 
-        1 
-     from
-        xxFEATURECLASSxx b
-    where b.globalid = a.globalid);
+    a.objectid = b.objectid;
 ```    
     
     See the src/py/resources directory of this repo for lists of CSCL feature classes and tables.  Consider stupid simple generating the final list of update SQLs by starting with these lists and typing out the update statement in "column mode" of a text editor. 
@@ -221,14 +220,19 @@ where exists
 
 
     ```sql
-    update sde.table_registry
-    set object_flags = CASE
-                        WHEN MOD(TRUNC(OBJECT_FLAGS / POWER(2, 18)), 2) = 0 THEN
-                        OBJECT_FLAGS + POWER(2, 18)
-                        ELSE OBJECT_FLAGS
-                      END
-    where registration_id = (select registration_id from sde.table_registry
-                            where owner = USER
+    update 
+        sde.table_registry
+    set 
+        object_flags = CASE
+                           WHEN MOD(TRUNC(OBJECT_FLAGS / POWER(2, 18)), 2) = 0 
+                           THEN
+                              OBJECT_FLAGS + POWER(2, 18)
+                           ELSE 
+                              OBJECT_FLAGS
+                       END
+    where 
+        registration_id = (select registration_id from sde.table_registry
+                            where owner = 'xxOWNERxx'
                             and table_name = 'xxFEATURECLASSxx');
     ```
 
@@ -244,11 +248,13 @@ where exists
                         ELSE OBJECT_FLAGS
                       END
     WHERE  REGISTRATION_ID = (select registration_id from sde.table_registry
-                              where owner = USER
+                              where owner = 'xxOWNERxx'
                               and table_name = 'xxFEATURECLASSxx_H');
     ```
 
-    The record in SDE.SDE_ARCHIVES needs to be populated:
+    The record in SDE.SDE_ARCHIVES needs to be populated.
+
+    Archive date should be set to archive_date in the source or sde.table_registry.registration_date of the source _H table. Verify that these values are equal. 
 
     ```sql
     insert into sde.sde_archives
@@ -268,6 +274,6 @@ where exists
         ,'GDB_FROM_DATE'
         ,'GDBB_TO_DATE'
         ,1234567890 --todo: unix epoch time in seconds should be same as source?
-        0
+        ,0
     );
     ```
