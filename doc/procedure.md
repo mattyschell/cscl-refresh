@@ -6,7 +6,7 @@ A generic procedure focusing on roles and responsibilities instead of technical 
 |-----:|---------------|---------------|
 |     1| DBA | investigate and prepare scripts |
 |     2| DBA | export sde |
-|     3| DBA | export cscl and scl_pub |
+|     3| DBA | export cscl and cscl_pub |
 |     4| All | schedule/coordinate timeline for next steps |
 |     5| DBA | grant dba to gis user on target |
 |     6| GIS | target drop and recreate sde |
