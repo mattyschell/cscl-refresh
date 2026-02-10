@@ -11,15 +11,16 @@ A generic procedure focusing on roles and responsibilities instead of technical 
 |     5| GIS | submit ticket to request DBA on target |
 |     6| DBA | spool GIS user grants and privileges to users and roles |
 |     7| DBA | grant dba to gis user on target |
-|     8| GIS | target drop and recreate sde |
-|     9| DBA | run anything that requires sysdba |
-|    10| DBA | import sde |
-|    11| GIS | verify and fix sde |
-|    12| GIS | target drop and recreate data creators |
-|    13| DBA | import data creators (cscl and cscl_pub) |
-|    14| GIS | verify and fix data creators |
-|    15| DBA | revoke dba from gis user |
-|    16| DBA | ensure no indirect system privileges exist |
+|     8| GIS | stop geodatabase from accepting geodatabase connections  |
+|     9| GIS | target drop and recreate sde |
+|    10| DBA | run anything that requires sysdba |
+|    11| DBA | import sde |
+|    12| GIS | verify and fix sde |
+|    13| GIS | target drop and recreate data creators (cscl and cscl_pub) |
+|    14| DBA | import data creators (cscl and cscl_pub) |
+|    15| GIS | verify and fix data creators |
+|    16| DBA | revoke dba from gis user |
+|    17| DBA | ensure no indirect system privileges exist |
 
 
 
