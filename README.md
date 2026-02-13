@@ -70,6 +70,17 @@ Refer to:
 
 #### 5a
 
+Export cscl.users for post-import tidying.  Drop it in the logs directory.
+
+```sql
+select 
+    username || ', ' || userid || ', ' || organization 
+from 
+    cscl.users;
+``
+
+#### 5b
+
 Drop and recreate cscl and cscl_pub on the target.
 
 ```sql
@@ -82,13 +93,13 @@ Check. Login as cscl and cscl_pub:
 @sql\verify-creator.sql
 ```
 
-#### 5b
+#### 5c
 
 impdp cscl and cscl_pub. 
 
 Ignore errors like: ORA-31684: Object type INDEX:"XXXX"."A377_IX1" already exists
 
-#### 5c
+#### 5d
 
 ```sql
 -- as CSCL
@@ -101,7 +112,7 @@ select * from all_indexes d where d.status not in ('VALID','N/A');
 select distinct(owner) from dba_objects where status != 'VALID';
 ```
 
-#### 5d
+#### 5e
 
 Grant correct privileges.  These are implemented chaotically on the source and for this reason alone we can't rely on them importing correctly.  Also impdp can't account for business objects like feature datasets. 
 
@@ -148,8 +159,21 @@ SDE.DEFAULT
         CSCL.DCPWORKVERSION (Public)
         CSCL.DOITTWORKVERSION (Public)
 ```
-7. (optional, out of scope for this repo) Remove the CSCL class extensions 
 
+7. Empty cscl.workorder
+```sql
+delete from
+    cscl.workorder;
+commit;
+```
+
+8. Review the users exported in 5a 
+
+There may be some users that only exist for this target environment. Add them.
+
+9. Perform a test edit
+
+From ArcMap create an editing version for a user. Edit a feature class that does not have class extensions. Save edits and reconcile and post the version.
 
 
 ## Option 2: Use ESRI Tools
