@@ -169,11 +169,40 @@ commit;
 
 8. Review the users exported in 5a 
 
-There may be some users that only exist for this target environment. Add them.
+There may be some users that only exist for this target environment. Add them back in to CSCL.users if necessary.
 
-9. Perform a test edit
+Check that all existing CSCL users have at least the BASIC role.  This role grants select access on cscl sequences and everything in CSCL_PUB. 
+
+```sql
+select 
+	a.username 
+from 
+	cscl.users a
+where 
+	a.username in (select 
+	                   username 
+	               from 
+	                   all_users)
+and 
+	a.username not in ('CSCL')
+and not exists (select 
+				   * 
+				from 
+                	dba_role_privs b
+                where 
+                	a.username = b.grantee
+                and b.granted_role = 'BASIC') 
+order by 1
+```
+
+Grant BASIC to any user returned by this.
+
+
+9. Perform Test Edits
 
 From ArcMap create an editing version for a user. Edit a feature class that does not have class extensions. Save edits and reconcile and post the version.
+
+A CSCL editor should be able to view the data in CSCL_PUB via the BASIC role.  Similarly, a CSCL editor should be able to edit feature classes that require sequence .next values via "select" granted to the BASIC role.
 
 
 ## Option 2: Use ESRI Tools
